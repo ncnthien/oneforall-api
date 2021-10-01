@@ -84,12 +84,12 @@ export const updateBrand = async (req: Request, res: Response) => {
   const newBrand = { ...cloneBrand, ...brand, value: brand.name.toLowerCase() }
 
   try {
-    if (brand.logo !== cloneBrand.logo) {
+    if (brand.logo && brand.logo !== cloneBrand.logo) {
       const logoUrl = await brandUpload.logo(brand.name, brand.logo)
       newBrand.logo = logoUrl
     }
 
-    if (brand.banner !== cloneBrand.banner) {
+    if (brand.banner && brand.banner !== cloneBrand.banner) {
       const bannerUrl = await brandUpload.banner(brand.name, brand.banner)
       newBrand.banner = bannerUrl
     }
