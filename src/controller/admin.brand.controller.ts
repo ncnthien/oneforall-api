@@ -101,3 +101,18 @@ export const updateBrand = async (req: Request, res: Response) => {
     return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
   }
 }
+
+export const deleteBrand = async (req: Request, res: Response) => {
+  const { brandId: _id } = req.params
+  if (!_id) {
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
+  }
+
+  try {
+    const result = await BrandModel.deleteOne({ _id })
+
+    return res.status(httpStatus.OK).send(result)
+  } catch (error) {
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
+  }
+}
