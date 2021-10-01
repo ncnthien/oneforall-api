@@ -58,3 +58,46 @@ export const addBrand = async (req: Request, res: Response) => {
     return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
   }
 }
+
+export const updateBrand = async (req: Request, res: Response) => {
+  const { body: brand } = req
+  const { brandId: _id } = req.params
+  if (!_id) {
+    return res.sendStatus(httpStatus.BAD_REQUEST)
+  }
+
+  const existingBrand = await BrandModel.findOne({
+    name: brand.name,
+    _id: { $ne: _id },
+  })
+  if (existingBrand) {
+    return res.status(httpStatus.BAD_REQUEST).send('Brand name has existed')
+  }
+
+  const queryBrand = await BrandModel.findById(_id)
+  if (!queryBrand) {
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
+  }
+
+  const cloneBrand = JSON.parse(JSON.stringify(queryBrand))
+  const newBrand = { ...cloneBrand, ...brand, value: brand.name.toLowerCase() }
+
+  try {
+    if (brand.logo !== cloneBrand.logo) {
+      const logoUrl = await brandUpload.logo(brand.name, brand.logo)
+      newBrand.logo = logoUrl
+    }
+
+    if (brand.banner !== cloneBrand.banner) {
+      const bannerUrl = await brandUpload.banner(brand.name, brand.banner)
+      newBrand.banner = bannerUrl
+    }
+
+    await BrandModel.replaceOne({ _id }, newBrand)
+    const replacingBrand = await BrandModel.findById(_id)
+
+    return res.status(httpStatus.OK).send(replacingBrand)
+  } catch (error) {
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
+  }
+}
