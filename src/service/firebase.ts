@@ -2,14 +2,14 @@ import firebaseApp from '../config/firebase.config'
 import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage'
 
 const storage = getStorage(firebaseApp)
+const typeUploadString = 'base64'
 
 export const uploadAvatar = async (
   avatarName: string,
   base64String: string
 ) => {
-  const avatarFolderString = 'avatar/'
-  const typeUploadString = 'base64'
-  const avatarRef = ref(storage, avatarFolderString + avatarName + '.jpg')
+  const avatarFolderString = 'avatar'
+  const avatarRef = ref(storage, `${avatarFolderString}/${avatarName}.jpg`)
 
   try {
     const snapshot = await uploadString(
@@ -28,7 +28,6 @@ export const uploadAvatar = async (
 export const brandUpload = {
   logo: async (brandName: string, base64String: string) => {
     const brandFolderString = 'brand/'
-    const typeUploadString = 'base64'
     const brandRef = ref(
       storage,
       `${brandFolderString}${brandName}/${brandName}-logo.png`
@@ -49,7 +48,6 @@ export const brandUpload = {
   },
   banner: async (brandName: string, base64String: string) => {
     const brandFolderString = 'brand/'
-    const typeUploadString = 'base64'
     const brandRef = ref(
       storage,
       `${brandFolderString}${brandName}/${brandName}-banner.jpg`

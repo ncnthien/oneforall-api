@@ -3,6 +3,31 @@ import httpStatus from '../constant/status.constant'
 import BrandModel from '../model/brand.model'
 import { brandUpload } from '../service/firebase'
 
+export const getBrands = async (req: Request, res: Response) => {
+  try {
+    const queryBrands = await BrandModel.find()
+
+    return res.status(httpStatus.OK).send(queryBrands)
+  } catch (error) {
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
+  }
+}
+
+export const getBrand = async (req: Request, res: Response) => {
+  const { brandId: _id } = req.params
+  if (!_id) {
+    return res.sendStatus(httpStatus.BAD_REQUEST)
+  }
+
+  try {
+    const queryBrand = await BrandModel.findById(_id)
+
+    return res.status(httpStatus.OK).send(queryBrand)
+  } catch (error) {
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
+  }
+}
+
 export const addBrand = async (req: Request, res: Response) => {
   const { body: brand } = req
 
