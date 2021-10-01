@@ -4,7 +4,13 @@ import EventModel from '../model/event.model'
 import { uploadEventBanner } from '../service/firebase'
 
 export const getEvents = async (req: Request, res: Response) => {
-  const { isActive } = req.params
+  try {
+    const queryEvents = await EventModel.find()
+
+    return res.status(httpStatus.OK).send(queryEvents)
+  } catch (error) {
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
+  }
 }
 
 export const addEvent = async (req: Request, res: Response) => {
