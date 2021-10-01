@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import httpStatus from '../constant/status.constant'
 import BrandModel from '../model/brand.model'
+import SubBrandModel from '../model/subBrand.model'
 import { brandUpload } from '../service/firebase'
 
 export const getBrands = async (req: Request, res: Response) => {
@@ -109,9 +110,12 @@ export const deleteBrand = async (req: Request, res: Response) => {
   }
 
   try {
-    const result = await BrandModel.deleteOne({ _id })
+    const results = await Promise.all([
+      BrandModel.deleteOne({ _id }),
+      SubBrandModel.deleteMany({ brand: _id }),
+    ])
 
-    return res.status(httpStatus.OK).send(result)
+    return res.status(httpStatus.OK).send(results)
   } catch (error) {
     return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
   }
