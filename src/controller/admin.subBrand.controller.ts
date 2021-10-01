@@ -78,3 +78,23 @@ export const updateSubBrand = async (req: Request, res: Response) => {
     return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
   }
 }
+
+export const deleteSubBrand = async (req: Request, res: Response) => {
+  const { subBrandId } = req.params
+  if (!subBrandId) {
+    return res.status(httpStatus.BAD_REQUEST).send('Request is not valid')
+  }
+
+  try {
+    const { deletedCount } = await SubBrandModel.deleteOne({ _id: subBrandId })
+    if (deletedCount <= 0) {
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .send('There is no sub-brand to delete')
+    }
+
+    return res.sendStatus(httpStatus.OK)
+  } catch (error) {
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
+  }
+}
