@@ -67,3 +67,24 @@ export const brandUpload = {
     }
   },
 }
+
+export const uploadEventBanner = async (
+  eventImageName: string,
+  base64String: string
+) => {
+  const eventFolderString = 'event'
+  const eventRef = ref(storage, `${eventFolderString}/${eventImageName}.jpg`)
+
+  try {
+    const snapshot = await uploadString(
+      eventRef,
+      base64String,
+      typeUploadString
+    )
+    const downloadURL = await getDownloadURL(snapshot.ref)
+
+    return downloadURL
+  } catch (error) {
+    return error
+  }
+}
