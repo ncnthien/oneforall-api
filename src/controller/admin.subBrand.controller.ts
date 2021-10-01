@@ -21,12 +21,12 @@ export const getSubBrands = async (req: Request, res: Response) => {
 export const addSubBrand = async (req: Request, res: Response) => {
   const { body: subBrand } = req
   const { brandId } = req.params
-  if (!brandId) {
-    return res.status(httpStatus.BAD_GATEWAY).send('Brand id is not valid.')
+  if (!subBrand || !brandId) {
+    return res.status(httpStatus.BAD_GATEWAY).send('Request is not valid.')
   }
 
   const existingSubBrand = await SubBrandModel.findOne({
-    $and: [{ name: subBrand.name, brand: brandId }],
+    $and: [{ value: subBrand.name.toLowerCase(), brand: brandId }],
   })
   if (existingSubBrand) {
     return res
@@ -49,6 +49,32 @@ export const addSubBrand = async (req: Request, res: Response) => {
   }
 }
 
-// export const updateSubBrand = async (req: Request, res: Response) => {
-//   const { subBrandId } = req.params
-// }
+export const updateSubBrand = async (req: Request, res: Response) => {
+  const { body: subBrand } = req
+  const { subBrandId, brandId } = req.params
+  if (!subBrand || !subBrandId || !brandId) {
+    return res.status(httpStatus.BAD_GATEWAY).send('Request is not valid.')
+  }
+
+  const existingSubBrand = await SubBrandModel.findOne({
+    $and: [{ value: subBrand.name.toLowerCase(), brand: brandId }],
+  })
+  if (existingSubBrand) {
+    return res
+      .status(httpStatus.BAD_REQUEST)
+      .send('Sub brand name has existed in this brand')
+  }
+
+  try {
+    await SubBrandModel.updateOne(
+      { _id: subBrandId },
+      { $set: { name: subBrand.name, value: subBrand.name.toLowerCase() } }
+    )
+
+    const newSubBrand = await SubBrandModel.findOne({ _id: subBrandId })
+
+    return res.status(httpStatus.OK).send(newSubBrand)
+  } catch (error) {
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
+  }
+}
