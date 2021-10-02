@@ -71,3 +71,18 @@ export const updateEvent = async (req: Request, res: Response) => {
     return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
   }
 }
+
+export const deleteEvent = async (req: Request, res: Response) => {
+  const { eventId: _id } = req.params
+  if (!_id) {
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
+  }
+
+  try {
+    const results = await EventModel.deleteOne({ _id })
+
+    return res.status(httpStatus.OK).send(results)
+  } catch (error) {
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
+  }
+}
