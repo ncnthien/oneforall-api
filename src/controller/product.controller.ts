@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import Joi from 'joi'
 import httpStatus from '../constant/status.constant'
 import { getFilteredProduct } from '../helper/product.helper'
+import brandModel from '../model/brand.model'
 import ProductModel from '../model/product.model'
 
 export const paginationSchema = Joi.object({
@@ -9,7 +10,7 @@ export const paginationSchema = Joi.object({
   limit: Joi.number().default(24),
 })
 
-const querySchema = Joi.object({
+export const querySchema = Joi.object({
   type: Joi.string().valid('laptop', 'pc', 'accessory').required(),
   sort: Joi.string().valid('ascend', 'descend'),
   filter: Joi.object({
@@ -59,12 +60,16 @@ export const getProductList = async (req: Request, res: Response) => {
       .send({ message: queryError.details[0].message })
   }
 
-  const { productList, productDisplay } = await getFilteredProduct({
-    pagination,
-    query,
-  })
+  try {
+    const { productList, productDisplay } = await getFilteredProduct({
+      pagination,
+      query,
+    })
 
-  return res.status(httpStatus.OK).json({ productList, productDisplay })
+    return res.status(httpStatus.OK).json({ productList, productDisplay })
+  } catch (error) {
+    return res.status(httpStatus.BAD_REQUEST).send(error)
+  }
 }
 
 export const getProductDetail = async (req: Request, res: Response) => {
@@ -76,6 +81,41 @@ export const getProductDetail = async (req: Request, res: Response) => {
     return res.status(httpStatus.OK).json({ product })
   } catch (error) {
     // if productId is not valid then respond status BAD REQUEST with err
+    return res.status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
+
+export const getProductListOfBrand = async (req: Request, res: Response) => {
+  const { brandId: _id } = req.params
+  // check if requestQuery invalid then respond BAD REQUEST status otherwise  handle page, limit and sort value
+  const { value: pagination, error: paginationError } =
+    paginationSchema.validate(req.query)
+  if (paginationError) {
+    return res
+      .status(httpStatus.BAD_REQUEST)
+      .send({ message: paginationError.details[0].message })
+  }
+
+  // check if requestBody invalid then respond BAD REQUEST status otherwise  handle filter
+  const { value: query, error: queryError } = querySchema.validate(req.body)
+  if (queryError) {
+    return res
+      .status(httpStatus.BAD_REQUEST)
+      .send({ message: queryError.details[0].message })
+  }
+
+  try {
+    const { productList, productDisplay } = await getFilteredProduct({
+      pagination,
+      query,
+    })
+
+    const brand = await brandModel.findById(_id)
+
+    return res
+      .status(httpStatus.OK)
+      .json({ productList, productDisplay, brand })
+  } catch (error) {
     return res.status(httpStatus.BAD_REQUEST).send(error)
   }
 }
