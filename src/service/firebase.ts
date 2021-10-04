@@ -1,5 +1,5 @@
+import { getDownloadURL, getStorage, ref, uploadString } from 'firebase/storage'
 import firebaseApp from '../config/firebase.config'
-import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage'
 
 const storage = getStorage(firebaseApp)
 
@@ -24,4 +24,41 @@ export const uploadAvatar = async (
   } catch (error) {
     return error
   }
+}
+
+export const upLoadProductImg = async (
+  productName: string,
+  base64StringList: string[]
+) => {
+  const productFolderString = 'product'
+
+  const convertBase64StringToImageUrl = async (
+    base64String: string,
+    index: number
+  ): Promise<string> => {
+    const productRef = ref(
+      storage,
+      `${productFolderString}/${productName}/${productName}-${index}.png`
+    )
+
+    try {
+      const snapshot = await uploadString(
+        productRef,
+        base64String,
+        typeUploadString
+      )
+      const downloadURL = await getDownloadURL(snapshot.ref)
+
+      return downloadURL
+    } catch (err) {
+      return ''
+    }
+  }
+
+  const convertedProductImageList: Promise<string>[] = base64StringList.map(
+    (base64String, index) => {
+      return convertBase64StringToImageUrl(base64String, index)
+    }
+  )
+  return convertedProductImageList
 }
