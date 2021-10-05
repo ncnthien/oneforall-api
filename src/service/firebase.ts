@@ -2,15 +2,14 @@ import { getDownloadURL, getStorage, ref, uploadString } from 'firebase/storage'
 import firebaseApp from '../config/firebase.config'
 
 const storage = getStorage(firebaseApp)
-
-const avatarFolderString = 'avatar/'
 const typeUploadString = 'base64'
 
 export const uploadAvatar = async (
   avatarName: string,
   base64String: string
 ) => {
-  const avatarRef = ref(storage, avatarFolderString + avatarName)
+  const avatarFolderString = 'avatar'
+  const avatarRef = ref(storage, `${avatarFolderString}/${avatarName}.jpg`)
 
   try {
     const snapshot = await uploadString(
@@ -61,4 +60,68 @@ export const upLoadProductImg = async (
     }
   )
   return convertedProductImageList
+}
+
+export const brandUpload = {
+  logo: async (brandName: string, base64String: string) => {
+    const brandFolderString = 'brand/'
+    const brandRef = ref(
+      storage,
+      `${brandFolderString}${brandName}/${brandName}-logo.png`
+    )
+
+    try {
+      const snapshot = await uploadString(
+        brandRef,
+        base64String,
+        typeUploadString
+      )
+      const downloadURL = await getDownloadURL(snapshot.ref)
+
+      return downloadURL
+    } catch (error) {
+      return error
+    }
+  },
+  banner: async (brandName: string, base64String: string) => {
+    const brandFolderString = 'brand/'
+    const brandRef = ref(
+      storage,
+      `${brandFolderString}${brandName}/${brandName}-banner.jpg`
+    )
+
+    try {
+      const snapshot = await uploadString(
+        brandRef,
+        base64String,
+        typeUploadString
+      )
+      const downloadURL = await getDownloadURL(snapshot.ref)
+
+      return downloadURL
+    } catch (error) {
+      return error
+    }
+  },
+}
+
+export const uploadEventBanner = async (
+  eventImageName: string,
+  base64String: string
+) => {
+  const eventFolderString = 'event'
+  const eventRef = ref(storage, `${eventFolderString}/${eventImageName}.jpg`)
+
+  try {
+    const snapshot = await uploadString(
+      eventRef,
+      base64String,
+      typeUploadString
+    )
+    const downloadURL = await getDownloadURL(snapshot.ref)
+
+    return downloadURL
+  } catch (error) {
+    return error
+  }
 }
