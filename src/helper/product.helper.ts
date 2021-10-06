@@ -1,4 +1,4 @@
-import productModel from '../model/product.model'
+import ProductModel from '../model/product.model'
 import { FilterObject, generateQueryProductList } from './filter.helper'
 
 interface QueryParameter {
@@ -32,8 +32,7 @@ export const getFilteredProduct = async ({
   if (sort) {
     if (sort === 'ascend') {
       const productList = (
-        await productModel
-          .find({ type, ...otherQuery })
+        await ProductModel.find({ type, ...otherQuery })
           .populate([
             { path: 'brand', match: { ...brandQuery } },
             { path: 'subBrand', match: { ...subBrandQuery } },
@@ -55,8 +54,7 @@ export const getFilteredProduct = async ({
 
     if (sort === 'descend') {
       const productList = (
-        await productModel
-          .find({ type, ...otherQuery })
+        await ProductModel.find({ type, ...otherQuery })
           .populate([
             { path: 'brand', match: { ...brandQuery } },
             { path: 'subBrand', match: { ...subBrandQuery } },
@@ -78,8 +76,7 @@ export const getFilteredProduct = async ({
   }
 
   const productList = (
-    await productModel
-      .find({ type, ...otherQuery })
+    await ProductModel.find({ type, ...otherQuery })
       .populate([
         { path: 'brand', match: { ...brandQuery } },
         { path: 'subBrand', match: { ...subBrandQuery } },

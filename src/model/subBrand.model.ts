@@ -1,5 +1,5 @@
 import { Document, model, PopulatedDoc, Schema } from 'mongoose'
-import brandModel, { BrandDocument } from './brand.model'
+import BrandModel, { BrandDocument } from './brand.model'
 
 export interface SubBrandDocument extends Document {
   brand: PopulatedDoc<BrandDocument & Document>
@@ -8,7 +8,7 @@ export interface SubBrandDocument extends Document {
 }
 
 const subBrandSchema = new Schema({
-  brand: { type: Schema.Types.ObjectId, required: true, ref: brandModel },
+  brand: { type: Schema.Types.ObjectId, required: true, ref: BrandModel },
   name: { type: String, required: true },
   value: { type: String, required: true },
 })

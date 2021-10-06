@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import config from '../config'
 import httpStatus from '../constant/status.constant'
-import adminModel from '../model/admin.model'
+import AdminModel from '../model/admin.model'
 
 export const checkAdminAuthorized = async (
   req: Request,
@@ -20,7 +20,7 @@ export const checkAdminAuthorized = async (
     )
 
     if (typeof payload === 'object') {
-      const existingAdmin = adminModel.findById(payload._id)
+      const existingAdmin = AdminModel.findById(payload._id)
 
       if (!existingAdmin) {
         return res.status(httpStatus.FORBIDDEN).send('Forbidden')

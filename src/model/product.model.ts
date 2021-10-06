@@ -1,6 +1,6 @@
 import { Document, model, PopulatedDoc, Schema } from 'mongoose'
-import brandModel, { BrandDocument } from './brand.model'
-import subBrandModel, { SubBrandDocument } from './subBrand.model'
+import BrandModel, { BrandDocument } from './brand.model'
+import SubBrandModel, { SubBrandDocument } from './subBrand.model'
 
 interface Detail {
   value: string
@@ -40,8 +40,8 @@ const detailSchema = new Schema({
 const productSchema = new Schema({
   name: { type: String, required: true },
   type: { type: String, enum: ['laptop', 'pc', 'accessory'], required: true },
-  brand: { type: Schema.Types.ObjectId, required: true, ref: brandModel },
-  subBrand: { type: Schema.Types.ObjectId, required: true, ref: subBrandModel },
+  brand: { type: Schema.Types.ObjectId, required: true, ref: BrandModel },
+  subBrand: { type: Schema.Types.ObjectId, required: true, ref: SubBrandModel },
   price: { type: Number, required: true },
   isSale: { type: Boolean, required: true },
   reducedPrice: { type: Number },
