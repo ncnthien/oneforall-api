@@ -136,11 +136,17 @@ export const updateProduct = async (req: Request, res: Response) => {
   }
 
   try {
+    // covert base64 array to image url array and upload on firebase storage
+    const convertedImages = await Promise.all(
+      await upLoadProductImg(product.name, product.images)
+    )
+
     // find and update product document
     const updatedProduct = await ProductModel.findByIdAndUpdate(
       _id,
       {
         ...product,
+        images: convertedImages,
       },
       { new: true }
     )
