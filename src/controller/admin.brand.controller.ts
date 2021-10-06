@@ -32,7 +32,7 @@ export const getBrand = async (req: Request, res: Response) => {
 export const addBrand = async (req: Request, res: Response) => {
   const { body: brand } = req
 
-  if (!brand.logo && brand.banner) {
+  if (!brand.logo || !brand.banner) {
     return res.status(httpStatus.BAD_REQUEST).send('Logo and banner is needed')
   }
 
