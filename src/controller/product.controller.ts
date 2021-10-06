@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import Joi from 'joi'
 import httpStatus from '../constant/status.constant'
 import { getFilteredProduct } from '../helper/product.helper'
-import brandModel from '../model/brand.model'
+import BrandModel from '../model/brand.model'
 import ProductModel from '../model/product.model'
 
 export const paginationSchema = Joi.object({
@@ -110,7 +110,7 @@ export const getProductListOfBrand = async (req: Request, res: Response) => {
       query,
     })
 
-    const brand = await brandModel.findById(_id)
+    const brand = await BrandModel.findById(_id)
 
     return res
       .status(httpStatus.OK)

@@ -126,11 +126,13 @@ export const addProduct = async (req: Request, res: Response) => {
 export const updateProduct = async (req: Request, res: Response) => {
   const { productId: _id } = req.params
   // check if requestBody invalid then respond BAD REQUEST status otherwise  handle value (product)
-  const { value: product, error } = productSchema.validate(req.body)
-  if (error) {
+  const { value: product, error: productError } = productSchema.validate(
+    req.body
+  )
+  if (productError) {
     return res
       .status(httpStatus.BAD_REQUEST)
-      .send({ message: error.details[0].message })
+      .send({ message: productError.details[0].message })
   }
 
   try {
@@ -155,13 +157,10 @@ export const deleteProduct = async (req: Request, res: Response) => {
   const { productId: _id } = req.params
 
   try {
-    // find and delete product document
     await ProductModel.findByIdAndDelete(_id)
 
-    // respond OK status with updated product
     return res.status(httpStatus.OK).send('successful delete')
   } catch (err) {
-    // if productId value is not valid then respond status BAD REQUEST with err
     return res.status(httpStatus.BAD_REQUEST).send(err)
   }
 }
