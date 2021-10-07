@@ -9,7 +9,7 @@ const productSchema = Joi.object({
   name: Joi.string().required(),
   type: Joi.string().valid('laptop', 'pc', 'accessory').required(),
   brand: Joi.string().required(),
-  subBrand: Joi.string().required(),
+  subBrand: Joi.string(),
   price: Joi.number().required(),
   isSale: Joi.boolean().required(),
   reducedPrice: Joi.number(),
@@ -58,10 +58,12 @@ const productSchema = Joi.object({
     value: Joi.string().required(),
     text: Joi.string(),
   }),
-  extraDetail: Joi.object({
-    field: Joi.string().required(),
-    value: Joi.string().required(),
-  }),
+  extraDetail: Joi.array().items(
+    Joi.object({
+      field: Joi.string().required(),
+      value: Joi.string().required(),
+    })
+  ),
 })
 
 export const getProductList = async (req: Request, res: Response) => {

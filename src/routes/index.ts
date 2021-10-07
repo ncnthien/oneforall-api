@@ -13,6 +13,7 @@ import payRoute from './pay.route'
 import productRoute from './product.route'
 import profileRoute from './profile.route'
 import searchRoute from './search.route'
+import eventRoute from './event.route'
 
 const routes = (app: Application) => {
   app.use('/api/admin/auth', adminAuthRoute)
@@ -27,6 +28,7 @@ const routes = (app: Application) => {
   app.use('/api/product', productRoute)
   app.use('/api/profile', checkAuthorized, profileRoute)
   app.use('/api/search', searchRoute)
+  app.use('/api/event', eventRoute)
 }
 
 export default routes
