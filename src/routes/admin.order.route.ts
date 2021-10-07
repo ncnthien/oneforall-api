@@ -8,7 +8,7 @@ import {
 const router = Router()
 
 router.get('/', getOrderList)
-router.put('/:orderId/update', updateOrder)
+router.patch('/:orderId/update', updateOrder)
 router.delete('/:orderId/delete', deleteOrder)
 
 export default router
