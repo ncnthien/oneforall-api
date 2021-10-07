@@ -3,7 +3,7 @@ import ProductModel, { ProductDocument } from './product.model'
 import UserModel, { UserDocument } from './user.model'
 
 interface Product {
-  ref: PopulatedDoc<ProductDocument & Document>
+  productRef: PopulatedDoc<ProductDocument & Document>
   quantity: number
   cost: number
 }
@@ -17,7 +17,7 @@ export interface SubBrandDocument extends Document {
 }
 
 const productSchema = new Schema({
-  ref: { type: Schema.Types.ObjectId, ref: ProductModel },
+  productRef: { type: Schema.Types.ObjectId, ref: ProductModel },
   quantity: { type: Number, required: true },
   cost: { type: Number, required: true },
 })

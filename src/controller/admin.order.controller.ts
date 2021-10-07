@@ -2,25 +2,11 @@ import { Request, Response } from 'express'
 import Joi from 'joi'
 import httpStatus from '../constant/status.constant'
 import OrderModel from '../model/order.model'
-import ProductModel from '../model/product.model'
 
 const orderSchema = Joi.object({
-  code: Joi.string().required(),
-  date: Joi.date().default(Date.now),
-  products: Joi.array()
-    .items(
-      Joi.object({
-        ref: Joi.string().required(),
-        quantity: Joi.number().required(),
-        cost: Joi.number().required(),
-      })
-    )
-    .min(1)
-    .required(),
   status: Joi.string()
     .valid('pending', 'claimed', 'delivering', 'delivered')
     .required(),
-  user: Joi.number().required(),
 })
 
 export const getOrderList = async (req: Request, res: Response) => {
@@ -45,10 +31,10 @@ export const updateOrder = async (req: Request, res: Response) => {
 
   try {
     // find and update order document
-    const updatedOrder = await ProductModel.findByIdAndUpdate(
+    const updatedOrder = await OrderModel.findByIdAndUpdate(
       _id,
       {
-        ...order,
+        status: order.status,
       },
       { new: true }
     )
