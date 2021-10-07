@@ -58,6 +58,10 @@ const productSchema = Joi.object({
     value: Joi.string().required(),
     text: Joi.string(),
   }),
+  extraDetail: Joi.object({
+    field: Joi.string().required(),
+    value: Joi.string().required(),
+  }),
 })
 
 export const getProductList = async (req: Request, res: Response) => {
