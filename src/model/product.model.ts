@@ -7,6 +7,11 @@ interface Detail {
   text?: string
 }
 
+interface ExtraDetail {
+  field: string
+  value: string
+}
+
 export interface ProductDocument extends Document {
   name: string
   type: 'laptop' | 'pc' | 'accessory'
@@ -30,6 +35,7 @@ export interface ProductDocument extends Document {
   weight?: Detail
   resolution?: Detail
   accessoryType?: Detail
+  extraDetail?: ExtraDetail[]
 }
 
 const detailSchema = new Schema({
@@ -37,11 +43,16 @@ const detailSchema = new Schema({
   text: { type: String },
 })
 
+const extraDetailSchema = new Schema({
+  field: { type: String, required: true },
+  value: { type: String, required: true },
+})
+
 const productSchema = new Schema({
   name: { type: String, required: true },
   type: { type: String, enum: ['laptop', 'pc', 'accessory'], required: true },
   brand: { type: Schema.Types.ObjectId, required: true, ref: BrandModel },
-  subBrand: { type: Schema.Types.ObjectId, required: true, ref: SubBrandModel },
+  subBrand: { type: Schema.Types.ObjectId, ref: SubBrandModel },
   price: { type: Number, required: true },
   isSale: { type: Boolean, required: true },
   reducedPrice: { type: Number },
@@ -60,6 +71,7 @@ const productSchema = new Schema({
   weight: { type: detailSchema },
   resolution: { type: detailSchema },
   accessoryType: { type: detailSchema },
+  extraDetail: { type: [extraDetailSchema] },
 })
 
 export default model<ProductDocument>('Product', productSchema)
