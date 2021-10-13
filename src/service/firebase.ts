@@ -54,9 +54,19 @@ export const upLoadProductImg = async (
     }
   }
 
+  const base64Regex =
+    /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/
+
   const convertedProductImageList: Promise<string>[] = base64StringList.map(
     (base64String, index) => {
-      return convertBase64StringToImageUrl(base64String, index)
+      if (base64Regex.test(base64String)) {
+        return convertBase64StringToImageUrl(base64String, index)
+      }
+      const imageUrl: Promise<string> = new Promise((resolve) => {
+        resolve(base64String)
+      })
+
+      return imageUrl
     }
   )
   return convertedProductImageList
