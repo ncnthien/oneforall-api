@@ -1,5 +1,11 @@
 import { getDownloadURL, getStorage, ref, uploadString } from 'firebase/storage'
 import firebaseApp from '../config/firebase.config'
+import {
+  getAuth,
+  signInWithCredential,
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+} from 'firebase/auth'
 
 const storage = getStorage(firebaseApp)
 const typeUploadString = 'base64'
@@ -124,4 +130,26 @@ export const uploadEventBanner = async (
   } catch (error) {
     return error
   }
+}
+
+export const getGoogleUser = async (token: string) => {
+  const credential = GoogleAuthProvider.credential(token)
+  const auth = getAuth()
+
+  const data = await signInWithCredential(auth, credential).catch((error) => {
+    throw error
+  })
+
+  return data.user
+}
+
+export const getFacebookUser = async (token: string) => {
+  const credential = FacebookAuthProvider.credential(token)
+  const auth = getAuth()
+
+  const data = await signInWithCredential(auth, credential).catch((error) => {
+    throw error
+  })
+
+  return data.user
 }
