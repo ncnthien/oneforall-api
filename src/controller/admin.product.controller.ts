@@ -59,10 +59,12 @@ const productSchema = Joi.object({
     text: Joi.string(),
   }),
   extraDetail: Joi.array().items(
-    Joi.object({
-      field: Joi.string().required(),
-      value: Joi.string().required(),
-    })
+    Joi.array().items(
+      Joi.object({
+        field: Joi.string().required(),
+        value: Joi.string().required(),
+      })
+    )
   ),
 })
 
