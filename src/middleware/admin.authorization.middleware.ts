@@ -14,10 +14,9 @@ export const checkAdminAuthorized = async (
   }
 
   try {
-    const payload = jwt.verify(
-      req.headers['authorization'] || '',
-      config.jwtPrivateKey
-    )
+    const token = req.headers['authorization'].split(' ')[1]
+
+    const payload = jwt.verify(token || '', config.jwtPrivateKey)
 
     if (typeof payload === 'object') {
       const existingAdmin = AdminModel.findById(payload._id)
