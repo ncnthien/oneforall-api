@@ -2,10 +2,12 @@ import express, { Application } from 'express'
 import config from './config'
 import connect from './database/connect'
 import routes from './routes'
+import cors from 'cors'
 
 const app: Application = express()
 
 // for parsing application/json and parsing application/x-www-form-urlencoded
+app.use(cors())
 app.use(express.json({ limit: '50mb' }))
 app.use(
   express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 })
