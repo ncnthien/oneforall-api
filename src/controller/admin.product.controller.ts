@@ -3,13 +3,17 @@ import Joi from 'joi'
 import httpStatus from '../constant/status.constant'
 import ProductModel from '../model/product.model'
 import { upLoadProductImg } from '../service/firebase'
-import { paginationSchema } from './product.controller'
+
+const paginationSchema = Joi.object({
+  page: Joi.number().default(1),
+  limit: Joi.number().default(24),
+})
 
 const productSchema = Joi.object({
   name: Joi.string().required(),
   type: Joi.string().valid('laptop', 'pc', 'accessory').required(),
   brand: Joi.string().required(),
-  subBrand: Joi.string(),
+  subBrand: Joi.string().required(),
   price: Joi.number().required(),
   isSale: Joi.boolean().required(),
   reducedPrice: Joi.number(),

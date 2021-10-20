@@ -5,12 +5,9 @@ import { getFilteredProduct } from '../helper/product.helper'
 import BrandModel from '../model/brand.model'
 import ProductModel from '../model/product.model'
 
-export const paginationSchema = Joi.object({
+export const querySchema = Joi.object({
   page: Joi.number().default(1),
   limit: Joi.number().default(24),
-})
-
-export const querySchema = Joi.object({
   type: Joi.string().valid('laptop', 'pc', 'accessory').required(),
   sort: Joi.string().valid('ascend', 'descend'),
   filter: Joi.object({
@@ -43,22 +40,16 @@ export const querySchema = Joi.object({
 })
 
 export const getProductList = async (req: Request, res: Response) => {
-  // check if requestQuery invalid then respond BAD REQUEST status otherwise  handle page, limit and sort value
-  const { value: pagination, error: paginationError } =
-    paginationSchema.validate(req.query)
-  if (paginationError) {
+  // check if requestQuery invalid then respond BAD REQUEST status otherwise  handle filter
+  const { value, error } = querySchema.validate(req.query)
+  if (error) {
     return res
       .status(httpStatus.BAD_REQUEST)
-      .send({ message: paginationError.details[0].message })
+      .send({ message: error.details[0].message })
   }
 
-  // check if requestBody invalid then respond BAD REQUEST status otherwise  handle filter
-  const { value: query, error: queryError } = querySchema.validate(req.body)
-  if (queryError) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .send({ message: queryError.details[0].message })
-  }
+  const { page, limit, ...query } = value
+  const pagination = { page, limit }
 
   try {
     const { productList, productDisplay } = await getFilteredProduct({
@@ -88,21 +79,15 @@ export const getProductDetail = async (req: Request, res: Response) => {
 export const getProductListOfBrand = async (req: Request, res: Response) => {
   const { brandId: _id } = req.params
   // check if requestQuery invalid then respond BAD REQUEST status otherwise  handle page, limit and sort value
-  const { value: pagination, error: paginationError } =
-    paginationSchema.validate(req.query)
-  if (paginationError) {
+  const { value, error } = querySchema.validate(req.query)
+  if (error) {
     return res
       .status(httpStatus.BAD_REQUEST)
-      .send({ message: paginationError.details[0].message })
+      .send({ message: error.details[0].message })
   }
 
-  // check if requestBody invalid then respond BAD REQUEST status otherwise  handle filter
-  const { value: query, error: queryError } = querySchema.validate(req.body)
-  if (queryError) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .send({ message: queryError.details[0].message })
-  }
+  const { page, limit, ...query } = value
+  const pagination = { page, limit }
 
   try {
     const { productList, productDisplay } = await getFilteredProduct({

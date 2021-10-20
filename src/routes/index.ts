@@ -22,7 +22,7 @@ const routes = (app: Application) => {
   app.use('/api/admin/brand', checkAdminAuthorized, adminBrandRoute)
   app.use('/api/admin/event', checkAdminAuthorized, adminEventRoute)
   app.use('/api/admin/order', checkAdminAuthorized, adminOrderRoute)
-  app.use('/api/admin/product', checkAdminAuthorized, adminProductRoute)
+  app.use('/api/admin/product', adminProductRoute)
   app.use('/api/admin/sub-brand', checkAdminAuthorized, adminSubBrandRoute)
   app.use('/api/admin/user', checkAdminAuthorized, adminUserRoute)
   app.use('/api/auth', authRoute)
