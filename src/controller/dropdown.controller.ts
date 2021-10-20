@@ -20,14 +20,14 @@ export const getDropdown = async (req: Request, res: Response) => {
           return {
             _id: subBrand._id,
             subBrand: subBrand.name,
-            queryUrl: `brand/${brand.value}?subBrand=${brand.value}`,
+            queryUrl: `/brand/${brand.value}?subBrand=${brand.value}`,
           }
         })
 
         return {
           _id: brand._id,
           brand: brand.name,
-          brandUrl: `brand/${brand.value}`,
+          brandUrl: `/brand/${brand.value}`,
           subBrandList,
         }
       })
@@ -46,14 +46,14 @@ export const getDropdown = async (req: Request, res: Response) => {
           return {
             _id: subBrand._id,
             subBrand: subBrand.name,
-            queryUrl: `brand/${brand.value}?subBrand=${brand.value}`,
+            queryUrl: `/brand/${brand.value}?subBrand=${brand.value}`,
           }
         })
 
         return {
           _id: brand._id,
           brand: brand.name,
-          brandUrl: `brand/${brand.value}`,
+          brandUrl: `/brand/${brand.value}`,
           subBrandList,
         }
       })
