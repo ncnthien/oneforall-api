@@ -29,7 +29,7 @@ export const addEvent = async (req: Request, res: Response) => {
     const newEvent = { ...event, banner: bannerUrl }
     const createdEvent = await EventModel.create(newEvent)
 
-    return res.status(httpStatus.OK).send(createdEvent)
+    return res.status(httpStatus.CREATED).send(createdEvent)
   } catch (error) {
     return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
   }
