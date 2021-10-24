@@ -40,7 +40,13 @@ export const getFilteredProduct = async ({
           .sort({ price: 1 })
           .skip(skip)
           .limit(limit)
-      ).filter((product) => product.brand && product.subBrand)
+      ).filter((product) => {
+        if (product.type === 'accessory') {
+          return product.brand
+        }
+
+        return product.brand && product.subBrand
+      })
 
       return {
         productList,
@@ -62,7 +68,13 @@ export const getFilteredProduct = async ({
           .sort({ price: -1 })
           .skip(skip)
           .limit(limit)
-      ).filter((product) => product.brand && product.subBrand)
+      ).filter((product) => {
+        if (product.type === 'accessory') {
+          return product.brand
+        }
+
+        return product.brand && product.subBrand
+      })
 
       return {
         productList,
@@ -83,12 +95,22 @@ export const getFilteredProduct = async ({
       ])
       .skip(skip)
       .limit(limit)
-  ).filter((product) => product.brand && product.subBrand)
+  ).filter((product) => {
+    if (product.type === 'accessory') {
+      return product.brand
+    }
+
+    return product.brand && product.subBrand
+  })
 
   return {
-    productList: productList.filter(
-      (product) => product.brand && product.subBrand
-    ),
+    productList: productList.filter((product) => {
+      if (product.type === 'accessory') {
+        return product.brand
+      }
+
+      return product.brand && product.subBrand
+    }),
     productDisplay: {
       start: productList.length > 0 ? start : 0,
       end: productList.length > end ? end : productList.length,

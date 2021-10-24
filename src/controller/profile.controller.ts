@@ -43,7 +43,7 @@ export const updateProfile = async (req: Request, res: Response) => {
     }
 
     await UserModel.replaceOne({ _id }, updatedUser)
-    const newUser = await UserModel.findOne({ _id })
+    const newUser = await UserModel.findById(_id, { password: 0 })
 
     return res.status(httpStatus.OK).send(newUser)
   } catch (error) {
