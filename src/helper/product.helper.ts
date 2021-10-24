@@ -18,7 +18,7 @@ export const getFilteredProduct = async ({
   query,
 }: QueryParameter) => {
   const { page, limit } = pagination
-  const { type, sort, filter } = query
+  const { type, sort, ...filter } = query
 
   // start and end number of products on per page
   const start = (page - 1) * limit + 1

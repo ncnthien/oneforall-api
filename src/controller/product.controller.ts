@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import Joi from 'joi'
 import httpStatus from '../constant/status.constant'
 import { getFilteredProduct } from '../helper/product.helper'
-import BrandModel from '../model/brand.model'
 import ProductModel from '../model/product.model'
 
 export const querySchema = Joi.object({
@@ -10,33 +9,31 @@ export const querySchema = Joi.object({
   limit: Joi.number().default(24),
   type: Joi.string().valid('laptop', 'pc', 'accessory').required(),
   sort: Joi.string().valid('ascend', 'descend'),
-  filter: Joi.object({
-    brand: Joi.string(),
-    subBrand: Joi.string(),
-    price: Joi.object({
-      min: Joi.number(),
-      max: Joi.number(),
-    }),
-    cpu: Joi.string(),
-    ram: Joi.string(),
-    hardDrive: Joi.string(),
-    hardDriveNumber: Joi.number(),
-    monitorDimension: Joi.object({
-      min: Joi.number(),
-      max: Joi.number(),
-    }),
-    monitorRatio: Joi.string(),
-    monitorBackground: Joi.string(),
-    frequency: Joi.string(),
-    graphicsCard: Joi.string(),
-    graphicsMemory: Joi.string(),
-    weight: Joi.object({
-      min: Joi.number(),
-      max: Joi.number(),
-    }),
-    resolution: Joi.string(),
-    accessoryType: Joi.string(),
+  brand: Joi.string(),
+  subBrand: Joi.string(),
+  price: Joi.object({
+    min: Joi.number(),
+    max: Joi.number(),
   }),
+  cpu: Joi.string(),
+  ram: Joi.string(),
+  hardDrive: Joi.string(),
+  hardDriveNumber: Joi.number(),
+  monitorDimension: Joi.object({
+    min: Joi.number(),
+    max: Joi.number(),
+  }),
+  monitorRatio: Joi.string(),
+  monitorBackground: Joi.string(),
+  frequency: Joi.string(),
+  graphicsCard: Joi.string(),
+  graphicsMemory: Joi.string(),
+  weight: Joi.object({
+    min: Joi.number(),
+    max: Joi.number(),
+  }),
+  resolution: Joi.string(),
+  accessoryType: Joi.string(),
 })
 
 export const getProductList = async (req: Request, res: Response) => {
@@ -50,7 +47,6 @@ export const getProductList = async (req: Request, res: Response) => {
 
   const { page, limit, ...query } = value
   const pagination = { page, limit }
-
   try {
     const { productList, productDisplay } = await getFilteredProduct({
       pagination,
@@ -72,35 +68,6 @@ export const getProductDetail = async (req: Request, res: Response) => {
     return res.status(httpStatus.OK).json({ product })
   } catch (error) {
     // if productId is not valid then respond status BAD REQUEST with err
-    return res.status(httpStatus.BAD_REQUEST).send(error)
-  }
-}
-
-export const getProductListOfBrand = async (req: Request, res: Response) => {
-  const { brandId: _id } = req.params
-  // check if requestQuery invalid then respond BAD REQUEST status otherwise  handle page, limit and sort value
-  const { value, error } = querySchema.validate(req.query)
-  if (error) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .send({ message: error.details[0].message })
-  }
-
-  const { page, limit, ...query } = value
-  const pagination = { page, limit }
-
-  try {
-    const { productList, productDisplay } = await getFilteredProduct({
-      pagination,
-      query,
-    })
-
-    const brand = await BrandModel.findById(_id)
-
-    return res
-      .status(httpStatus.OK)
-      .json({ productList, productDisplay, brand })
-  } catch (error) {
     return res.status(httpStatus.BAD_REQUEST).send(error)
   }
 }

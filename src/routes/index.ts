@@ -9,6 +9,7 @@ import adminProductRoute from './admin.product.route'
 import adminSubBrandRoute from './admin.subBrand.route'
 import adminUserRoute from './admin.user.route'
 import authRoute from './auth.route'
+import brandRoute from './brand.route'
 import dropdownRoute from './dropdown.route'
 import eventRoute from './event.route'
 import homeRoute from './home.route'
@@ -26,6 +27,7 @@ const routes = (app: Application) => {
   app.use('/api/admin/sub-brand', checkAdminAuthorized, adminSubBrandRoute)
   app.use('/api/admin/user', checkAdminAuthorized, adminUserRoute)
   app.use('/api/auth', authRoute)
+  app.use('/api/brand', brandRoute)
   app.use('/api/dropdown', dropdownRoute)
   app.use('/api/event', eventRoute)
   app.use('/api/home', homeRoute)
