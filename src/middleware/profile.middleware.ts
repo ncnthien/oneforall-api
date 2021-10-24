@@ -8,7 +8,9 @@ export const validateUpdatedProfile = (
   next: NextFunction
 ) => {
   const updatedUserSchema = Joi.object({
+    _id: Joi.string(),
     username: Joi.string().min(1).required(),
+    email: Joi.string(),
     avatar: Joi.string().allow('').required(),
     phone: Joi.string().allow('').required(),
     deliveryAddress: Joi.object({
@@ -16,7 +18,10 @@ export const validateUpdatedProfile = (
       ward: Joi.string().allow('').required(),
       district: Joi.string().allow('').required(),
       city: Joi.string().allow('').required(),
+      _id: Joi.string(),
     }),
+    disable: Joi.boolean().required(),
+    __v: Joi.number(),
   })
 
   const { error } = updatedUserSchema.validate(req.body)
