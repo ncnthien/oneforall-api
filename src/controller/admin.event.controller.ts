@@ -13,6 +13,20 @@ export const getEvents = async (req: Request, res: Response) => {
   }
 }
 
+export const getEvent = async (req: Request, res: Response) => {
+  const {
+    params: { eventId },
+  } = req
+
+  try {
+    const queryEvent = await EventModel.findById(eventId)
+
+    return res.status(httpStatus.OK).send(queryEvent)
+  } catch (error) {
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
+  }
+}
+
 export const addEvent = async (req: Request, res: Response) => {
   const { body: event } = req
   if (!event) {
