@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import Joi from 'joi'
 import httpStatus from '../constant/status.constant'
 import OrderModel from '../model/order.model'
+import ProductModel from '../model/product.model'
 import UserModel from '../model/user.model'
 
 const paySchema = Joi.object({
@@ -23,6 +24,12 @@ const paySchema = Joi.object({
     .min(1)
     .required(),
 })
+
+interface cartItem {
+  productRef: string
+  quantity: number
+  cost: number
+}
 
 export const getUserInformation = async (req: Request, res: Response) => {
   const { _id } = req.payloadToken
@@ -50,13 +57,27 @@ export const pay = async (req: Request, res: Response) => {
   }
 
   try {
-    const user = await UserModel.findByIdAndUpdate(
+    await UserModel.findByIdAndUpdate(
       _id,
       {
-        ...pay,
+        phone: pay.phone,
+        deliveryAddress: pay.deliveryAddress,
       },
       { new: true }
     )
+
+    pay.cart.forEach(async (item: cartItem) => {
+      const queryProduct = await ProductModel.findById(item.productRef)
+      if (!queryProduct) {
+        return res.sendStatus(httpStatus.BAD_REQUEST)
+      }
+
+      await ProductModel.findByIdAndUpdate(
+        item.productRef,
+        { quantity: queryProduct.quantity - item.quantity },
+        { new: true }
+      )
+    })
 
     await new OrderModel({
       code: Date.now(),
@@ -65,7 +86,7 @@ export const pay = async (req: Request, res: Response) => {
       user: _id,
     }).save()
 
-    res.status(httpStatus.OK).json('OK')
+    res.status(httpStatus.OK).send('OK')
   } catch (error) {
     res.status(httpStatus.BAD_REQUEST).send(error)
   }
