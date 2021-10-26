@@ -67,16 +67,20 @@ export const pay = async (req: Request, res: Response) => {
     )
 
     pay.cart.forEach(async (item: cartItem) => {
-      const queryProduct = await ProductModel.findById(item.productRef)
-      if (!queryProduct) {
-        return res.sendStatus(httpStatus.BAD_REQUEST)
-      }
+      try {
+        const queryProduct = await ProductModel.findById(item.productRef)
+        if (!queryProduct) {
+          return res.sendStatus(httpStatus.BAD_REQUEST)
+        }
 
-      await ProductModel.findByIdAndUpdate(
-        item.productRef,
-        { quantity: queryProduct.quantity - item.quantity },
-        { new: true }
-      )
+        await ProductModel.findByIdAndUpdate(
+          item.productRef,
+          { quantity: queryProduct.quantity - item.quantity },
+          { new: true }
+        )
+      } catch (error) {
+        res.status(httpStatus.BAD_REQUEST).send(error)
+      }
     })
 
     await new OrderModel({
