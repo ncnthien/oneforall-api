@@ -12,6 +12,11 @@ const orderSchema = Joi.object({
 export const getOrderList = async (req: Request, res: Response) => {
   try {
     const orderList = await OrderModel.find()
+      .populate({ path: 'user', select: 'email' })
+      .populate({
+        path: 'products',
+        populate: { path: 'productRef', select: 'name images' },
+      })
 
     return res.status(httpStatus.OK).json({ orderList })
   } catch (error) {
@@ -38,6 +43,11 @@ export const updateOrder = async (req: Request, res: Response) => {
       },
       { new: true }
     )
+      .populate({ path: 'user', select: 'email' })
+      .populate({
+        path: 'products',
+        populate: { path: 'productRef', select: 'name images' },
+      })
 
     // respond OK status with updated order
     return res.status(httpStatus.OK).json({ updatedOrder })
