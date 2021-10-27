@@ -7,7 +7,7 @@ import {
 const router = Router()
 
 router.get('/', getUsers)
-router.post('/', searchUser)
+router.post('/search', searchUser)
 router.patch('/:userId/block', blockUser)
 
 export default router
