@@ -10,6 +10,7 @@ export const querySchema = Joi.object({
   type: Joi.string().valid('laptop', 'pc', 'accessory').required(),
   sort: Joi.string().valid('ascend', 'descend'),
   brand: Joi.string(),
+  isSale: Joi.bool(),
   subBrand: Joi.string(),
   price: Joi.object({
     min: Joi.number(),
@@ -39,6 +40,7 @@ export const querySchema = Joi.object({
 export const getProductList = async (req: Request, res: Response) => {
   // check if requestQuery invalid then respond BAD REQUEST status otherwise  handle filter
   const { value, error } = querySchema.validate(req.query)
+
   if (error) {
     return res
       .status(httpStatus.BAD_REQUEST)
