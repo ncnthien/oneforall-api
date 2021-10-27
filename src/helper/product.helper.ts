@@ -10,6 +10,7 @@ interface QueryParameter {
     type: 'laptop' | 'pc' | 'accessory'
     sort?: 'ascend' | 'descend'
     filter: FilterObject
+    isSale?: boolean
   }
 }
 
@@ -18,7 +19,7 @@ export const getFilteredProduct = async ({
   query,
 }: QueryParameter) => {
   const { page, limit } = pagination
-  const { type, sort, ...filter } = query
+  const { type, sort, isSale, ...filter } = query
 
   // start and end number of products on per page
   const start = (page - 1) * limit + 1
@@ -27,94 +28,35 @@ export const getFilteredProduct = async ({
   const skip = (page - 1) * limit
 
   const { brandQuery, subBrandQuery, otherQuery } =
-    generateQueryProductList(filter)
+    await generateQueryProductList(filter)
 
-  if (sort) {
-    if (sort === 'ascend') {
-      const productList = (
-        await ProductModel.find({ type, ...otherQuery })
-          .populate([
-            { path: 'brand', match: { ...brandQuery } },
-            { path: 'subBrand', match: { ...subBrandQuery } },
-          ])
-          .sort({ price: 1 })
-          .skip(skip)
-          .limit(limit)
-      ).filter((product) => {
-        if (product.type === 'accessory') {
-          return product.brand
-        }
-
-        return product.brand && product.subBrand
-      })
-
-      return {
-        productList,
-        productDisplay: {
-          start: productList.length > 0 ? start : 0,
-          end: productList.length > end ? end : productList.length,
-          total: productList.length,
-        },
-      }
-    }
-
-    if (sort === 'descend') {
-      const productList = (
-        await ProductModel.find({ type, ...otherQuery })
-          .populate([
-            { path: 'brand', match: { ...brandQuery } },
-            { path: 'subBrand', match: { ...subBrandQuery } },
-          ])
-          .sort({ price: -1 })
-          .skip(skip)
-          .limit(limit)
-      ).filter((product) => {
-        if (product.type === 'accessory') {
-          return product.brand
-        }
-
-        return product.brand && product.subBrand
-      })
-
-      return {
-        productList,
-        productDisplay: {
-          start: productList.length > 0 ? start : 0,
-          end: productList.length > end ? end : productList.length,
-          total: productList.length,
-        },
-      }
-    }
+  const sortNumber = sort === 'ascend' ? 1 : sort === 'descend' ? -1 : null
+  let sortQuery = {}
+  if (sortNumber) {
+    sortQuery = { price: sortNumber }
+  }
+  const isSaleQuery = isSale ? { isSale: true } : {}
+  const productQuery = {
+    type,
+    ...otherQuery,
+    ...brandQuery,
+    ...subBrandQuery,
+    ...isSaleQuery,
   }
 
-  const productList = (
-    await ProductModel.find({ type, ...otherQuery })
-      .populate([
-        { path: 'brand', match: { ...brandQuery } },
-        { path: 'subBrand', match: { ...subBrandQuery } },
-      ])
-      .skip(skip)
-      .limit(limit)
-  ).filter((product) => {
-    if (product.type === 'accessory') {
-      return product.brand
-    }
+  const productList = await ProductModel.find(productQuery)
+    .skip(skip)
+    .limit(limit)
+    .sort({ ...sortQuery })
 
-    return product.brand && product.subBrand
-  })
+  const total = await ProductModel.find(productQuery).count()
 
   return {
-    productList: productList.filter((product) => {
-      if (product.type === 'accessory') {
-        return product.brand
-      }
-
-      return product.brand && product.subBrand
-    }),
+    productList,
     productDisplay: {
       start: productList.length > 0 ? start : 0,
       end: productList.length > end ? end : productList.length,
-      total: productList.length,
+      total,
     },
   }
 }

@@ -1,3 +1,6 @@
+import BrandModel from '../model/brand.model'
+import SubBrandModel from '../model/subBrand.model'
+
 export interface FilterObject {
   [index: string]: any
 }
@@ -6,10 +9,10 @@ interface Query {
   [index: string]: any
 }
 
-export const generateQueryProductList = (filterObject: FilterObject) => {
+export const generateQueryProductList = async (filterObject: FilterObject) => {
   // mongoDB query object converted by filterObject
-  const brandQuery: Query = {}
-  const subBrandQuery: Query = {}
+  let brandQuery: Query = {}
+  let subBrandQuery: Query = {}
   const otherQuery: Query = {}
 
   for (const filter in filterObject) {
@@ -38,15 +41,31 @@ export const generateQueryProductList = (filterObject: FilterObject) => {
       // type of filter is string | Ex: brand: 'lenovo' or ram: '16gb' or
       if (filter === 'brand') {
         // if filter equal 'brand' then insert query to brandQuery | EX: value: 'lenovo'
-        brandQuery['value'] = filterObject[filter]
+        brandQuery['brand'] = (
+          await BrandModel.findOne({
+            value: filterObject[filter],
+          })
+        )?._id
       } else if (filter === 'subBrand') {
         // if filter equal 'subBrand' then insert 'value': ... to subBrandQuery | EX: value: 'thinkpad'
-        subBrandQuery['value'] = filterObject[filter]
+        subBrandQuery['subBrand'] = (
+          await SubBrandModel.findOne({
+            value: filterObject[filter],
+          })
+        )?._id
       } else {
         // the rest insert query to otherQuery | EX: ram: '16gb'
         otherQuery[`${filter}.value`] = filterObject[filter]
       }
     }
+  }
+
+  if (!brandQuery.brand) {
+    brandQuery = {}
+  }
+
+  if (!subBrandQuery.subBrand) {
+    subBrandQuery = {}
   }
 
   return { brandQuery, subBrandQuery, otherQuery }
