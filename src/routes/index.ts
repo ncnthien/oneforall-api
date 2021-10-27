@@ -13,6 +13,7 @@ import brandRoute from './brand.route'
 import dropdownRoute from './dropdown.route'
 import eventRoute from './event.route'
 import homeRoute from './home.route'
+import orderRoute from './order.route'
 import payRoute from './pay.route'
 import productRoute from './product.route'
 import profileRoute from './profile.route'
@@ -31,6 +32,7 @@ const routes = (app: Application) => {
   app.use('/api/dropdown', dropdownRoute)
   app.use('/api/event', eventRoute)
   app.use('/api/home', homeRoute)
+  app.use('/api/order', checkAuthorized, orderRoute)
   app.use('/api/pay', checkAuthorized, payRoute)
   app.use('/api/product', productRoute)
   app.use('/api/profile', checkAuthorized, profileRoute)
