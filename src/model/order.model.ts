@@ -8,7 +8,7 @@ interface Product {
   cost: number
 }
 
-export interface SubBrandDocument extends Document {
+export interface OrderDocument extends Document {
   code: string
   date?: Date
   products: Product[]
@@ -34,4 +34,4 @@ const orderSchema = new Schema({
   user: { type: Schema.Types.ObjectId, required: true, ref: UserModel },
 })
 
-export default model<SubBrandDocument>('Order', orderSchema)
+export default model<OrderDocument>('Order', orderSchema)
