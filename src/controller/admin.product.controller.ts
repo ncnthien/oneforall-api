@@ -88,8 +88,10 @@ export const getProductList = async (req: Request, res: Response) => {
       .skip((page - 1) * limit)
       .limit(limit)
 
+    const total = await ProductModel.find().count()
+
     // respond OK status with product list
-    return res.status(httpStatus.OK).json({ productList })
+    return res.status(httpStatus.OK).json({ productList, total })
   } catch (error) {
     // if productId is not valid then respond status BAD REQUEST with err
     return res.status(httpStatus.BAD_REQUEST).send(error)
